@@ -1,3 +1,5 @@
+//import { budgetController} from './BudgetController.js'
+
 // BUDGET CONTROLLER
 var budgetController = (function () {
 
@@ -7,6 +9,21 @@ var budgetController = (function () {
         this.value = value;
         this.percentage = -1;
     };
+
+    Expense.prototype.calcPersantage = function (totalIncome) {
+        if (totalIncome > 0) {
+            this.percentage = Math.round((this.value / totalIncome) * 100);
+        }
+        else {
+            this.percentage = -1;
+        }
+
+    };
+
+    Expense.prototype.getPersentage = function () {
+        return this.percentage;
+    };
+
 
     var Income = function (id, description, value) {
         this.id = id;
@@ -97,6 +114,19 @@ var budgetController = (function () {
 
         },
 
+        calculatePersantages: function () {
+            data.allItems.exp.forEach(function (curr) {
+                curr.calcPersantage(data.totals.inc);
+            })
+        },
+
+        getPesantages: function () {
+            let allPersantages = data.allItems.exp.map(function (cur) {
+                return cur.getPersentage();
+            })
+            return allPersantages;
+        },
+
         getBudget: function () {
             return {
                 budget: data.budget,
@@ -113,6 +143,7 @@ var budgetController = (function () {
     };
 
 })();
+
 
 
 
@@ -237,6 +268,19 @@ var controller = (function (budgetCtrl, UICtrl) {
         UIController.displayBudget(budget);
     };
 
+    var updatePersantages = function () {
+
+        //Calculate persantages
+        budgetController.calculatePersantages();
+
+
+        //Read persantages from the budget controller
+        let persantages = budgetController.getPesantages();
+
+        // Update the Ui with the budget persantages
+        console.log(persantages);
+    }
+
     var ctrlAddItem = function () {
         var input, newItem;
 
@@ -255,6 +299,10 @@ var controller = (function (budgetCtrl, UICtrl) {
 
             // 5. Calculate and update budget
             updateBudget();
+
+
+            //6. Calculate and update percetages 
+            updatePersantages();
         }
     };
 
@@ -276,6 +324,9 @@ var controller = (function (budgetCtrl, UICtrl) {
 
         //Update and show the new budget
         updateBudget();
+
+        //6. Calculate and update percetages 
+        updatePersantages();
 
     };
 
