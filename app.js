@@ -163,7 +163,7 @@ var UIController = (function () {
         expensesLabel: '.budget__expenses--value',
         percentageLabel: '.budget__expenses--percentage',
         container: '.container',
-        // expensesPercLabel: '.item__percentage',
+        expensesPercLabel: '.item__percentage',
         // dateLabel: '.budget__title--month'
     };
 
@@ -191,6 +191,30 @@ var UIController = (function () {
             }
 
         },
+
+        displayPersantages:function(persantages){
+            let fileds = document.querySelectorAll(DOMstrings.expensesPercLabel);
+
+            let nodeListForEach = function(list,callback)
+            {
+                for (var i=0;i<list.length;i++)
+                {
+                    callback(list[i],i);
+                }
+
+            }
+
+            nodeListForEach(fileds, function(current,index){
+                if (persantages[index]>0)
+                {
+                    current.textContent=persantages[index]+ '%';
+                }
+              else{
+                current.textContent='---';
+              }
+            });
+        },
+
 
 
         addListItem: function (obj, type) {
@@ -278,7 +302,7 @@ var controller = (function (budgetCtrl, UICtrl) {
         let persantages = budgetController.getPesantages();
 
         // Update the Ui with the budget persantages
-        console.log(persantages);
+        UIController.displayPersantages(persantages);
     }
 
     var ctrlAddItem = function () {
